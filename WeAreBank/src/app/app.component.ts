@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule , Location} from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { safeLocalStorage } from './utils/storage.util';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import { safeLocalStorage } from './utils/storage.util';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'WeAreBank';
   showNavbar: boolean = false;
   userType: 'cliente' | 'gerente' | 'ejecutivo' | null = null;
@@ -32,7 +33,7 @@ export class AppComponent {
 
   private ejecutivoRoutes = ['/ejecutivos'];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private location: Location) {
     // Detecta cambios de ruta y actualiza el encabezado
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
@@ -61,6 +62,22 @@ export class AppComponent {
 
         this.errorMessage = null;
       });
+  }
+
+  ngOnInit() {
+    this.initializeBackButton();
+  }
+
+  initializeBackButton() {
+    App.addListener('backButton', ({ canGoBack }) => {
+      if (canGoBack) {
+        // Si hay historial, regresa a la página anterior
+        this.location.back();
+      } else {
+        // Si no hay más historial (ej. estás en el Login), cierra la app
+        App.exitApp();
+      }
+    });
   }
 
   logout(event: Event) {

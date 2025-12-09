@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { safeLocalStorage } from '../../utils/storage.util';
 
 interface Cuenta {
@@ -35,7 +35,7 @@ interface Tarjeta {
 @Component({
   selector: 'app-consultas',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './consultas.component.html',
   styleUrls: ['./consultas.component.css']
 })

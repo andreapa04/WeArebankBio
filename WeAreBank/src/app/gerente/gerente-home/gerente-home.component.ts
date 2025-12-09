@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 interface Ejecutivo {
@@ -15,7 +15,7 @@ interface Ejecutivo {
 @Component({
   selector: 'app-gerente-home',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './gerente-home.component.html',
   styleUrls: ['./gerente-home.component.css']
 })

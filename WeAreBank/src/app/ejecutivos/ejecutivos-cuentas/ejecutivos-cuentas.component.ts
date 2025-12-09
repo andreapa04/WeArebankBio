@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // 🔽 1. Importar AuthService
 
@@ -19,7 +19,7 @@ interface CarteraCuenta {
 @Component({
   selector: 'app-ejecutivos-cuentas',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './ejecutivos-cuentas.component.html',
   styleUrls: ['./ejecutivos-cuentas.component.css']
 })

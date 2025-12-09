@@ -1,57 +1,106 @@
 <section class="transfer-section">
-  <h2>Realizar transferencia</h2>
+  <h2>Operaciones Bancarias</h2>
 
   <div *ngIf="error" class="error-message">{{ error }}</div>
   <div *ngIf="mensaje" class="success-message">{{ mensaje }}</div>
 
   <div class="tipo-switch">
-    <label><input type="radio" name="tipo" (click)="onTipoCambio('INTERNA')" [checked]="tipo==='INTERNA'"> Interna</label>
-    <label><input type="radio" name="tipo" (click)="onTipoCambio('EXTERNA')" [checked]="tipo==='EXTERNA'"> Externa</label>
+    <label><input type="radio" name="tipo" (click)="onTipoCambio('INTERNA')" [checked]="tipo==='INTERNA'"> Transferir Interna</label>
+    <label><input type="radio" name="tipo" (click)="onTipoCambio('EXTERNA')" [checked]="tipo==='EXTERNA'"> Transferir a Otros Bancos</label>
+    <label style="color: #007bff; font-weight: bold;"><input type="radio" name="tipo" (click)="onTipoCambio('SIMULAR_RECEPCION')" [checked]="tipo==='SIMULAR_RECEPCION'"> ⬇ Recibir (Simulación)</label>
   </div>
 
-  <div class="form-group">
-    <label>Cuenta origen:</label>
-    <select [(ngModel)]="cuentaOrigen" name="cuentaOrigen">
-      <option [ngValue]="null">Seleccionar</option>
-      <option *ngFor="let c of cuentas" [ngValue]="c.idCuenta">
-        {{ c.tipoCuenta }} • ****{{ c.clabe.slice(-4) }} • Saldo: {{ c.saldo | currency }}
-      </option>
-    </select>
-  </div>
-
-  <div *ngIf="tipo==='INTERNA'" class="form-group">
-    <label>Cuenta destino (puede ser CLABE o ID interno):</label>
-    <input [(ngModel)]="cuentaDestino" name="cuentaDestino" placeholder="Ej: 123456789012345678">
-  </div>
-
-  <div *ngIf="tipo==='EXTERNA'">
+  <div *ngIf="tipo === 'INTERNA' || tipo === 'EXTERNA'">
+    <h3>Enviar Dinero</h3>
+    
     <div class="form-group">
-      <label>Destino (CLABE / cuenta):</label>
-      <input [(ngModel)]="destinoExterno" name="destinoExterno" placeholder="CLABE o número">
+      <label>Cuenta origen:</label>
+      <select [(ngModel)]="cuentaOrigen" name="cuentaOrigen">
+        <option [ngValue]="null">Seleccionar</option>
+        <option *ngFor="let c of cuentas" [ngValue]="c.idCuenta">
+          {{ c.tipoCuenta }} • ****{{ c.clabe.slice(-4) }} • Saldo: {{ c.saldo | currency }}
+        </option>
+      </select>
     </div>
+
+    <div *ngIf="tipo==='INTERNA'" class="form-group">
+      <label>Cuenta destino (CLABE o ID WeAreBank):</label>
+      <input [(ngModel)]="cuentaDestino" name="cuentaDestino" placeholder="Ej: 123456789012345678">
+    </div>
+
+    <div *ngIf="tipo==='EXTERNA'">
+      <div class="form-group">
+        <label>Destino (CLABE Interbancaria):</label>
+        <input [(ngModel)]="destinoExterno" name="destinoExterno" placeholder="18 dígitos">
+      </div>
+      <div class="form-group">
+        <label>Banco destino:</label>
+        <input [(ngModel)]="bancoDestino" name="bancoDestino" placeholder="Ej: BBVA, Santander">
+      </div>
+    </div>
+
     <div class="form-group">
-      <label>Banco destino:</label>
-      <input [(ngModel)]="bancoDestino" name="bancoDestino" placeholder="Nombre del banco">
+      <label>Monto a transferir:</label>
+      <input type="number" [(ngModel)]="monto" (input)="calcularComisionYTotal()" name="monto" min="0" step="0.01">
+    </div>
+
+    <div class="info">
+      <p>Comisión (7%): <strong>{{ comision | currency }}</strong></p>
+      <p>Monto total a descontar: <strong>{{ totalARetirar | currency }}</strong></p>
+    </div>
+
+    <div class="form-group">
+      <label>Concepto</label>
+      <input [(ngModel)]="concepto" name="concepto" placeholder="Ej: Pago de renta">
+    </div>
+
+    <div class="button-group">
+      <button (click)="transferir()">Enviar Transferencia</button>
+      <button (click)="cancelar()" type="button" class="btn-secondary">Cancelar</button>
     </div>
   </div>
 
-  <div class="form-group">
-    <label>Monto a transferir:</label>
-    <input type="number" [(ngModel)]="monto" (input)="calcularComisionYTotal()" name="monto" min="0" step="0.01">
+  <div *ngIf="tipo === 'SIMULAR_RECEPCION'" class="simulacion-box">
+    <h3>Simular Recepción (Desde otro Banco)</h3>
+    <p class="nota">Usa esto para probar qué pasa cuando alguien te envía dinero desde fuera.</p>
+
+    <div class="form-group">
+      <label>¿A cuál de mis cuentas llega el dinero?</label>
+      <select [(ngModel)]="simClabeDestino" name="simClabeDestino">
+        <option *ngFor="let c of cuentas" [value]="c.clabe">
+          {{ c.tipoCuenta }} - {{ c.clabe }} (Saldo: {{ c.saldo | currency }})
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Banco Origen (Simulado):</label>
+      <select [(ngModel)]="simBancoOrigen">
+        <option value="BBVA">BBVA</option>
+        <option value="Santander">Santander</option>
+        <option value="Banorte">Banorte</option>
+        <option value="HSBC">HSBC</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Nombre del Emisor:</label>
+      <input [(ngModel)]="simEmisor" placeholder="Ej: Empresa ACME">
+    </div>
+
+    <div class="form-group">
+      <label>Monto a Recibir:</label>
+      <input type="number" [(ngModel)]="simMonto" placeholder="0.00">
+    </div>
+
+    <div class="form-group">
+      <label>Concepto:</label>
+      <input [(ngModel)]="simConcepto" placeholder="Ej: Nómina">
+    </div>
+
+    <div class="button-group">
+      <button (click)="simularRecepcion()" class="btn-success">Simular Recepción SPEI</button>
+    </div>
   </div>
 
-  <div class="info">
-    <p>Comisión (7%): <strong>{{ comision | currency }}</strong></p>
-    <p>Monto que se descontará de tu cuenta: <strong>{{ totalARetirar | currency }}</strong></p>
-  </div>
-
-  <div class="form-group">
-    <label>Concepto</label>
-    <input [(ngModel)]="concepto" name="concepto" placeholder="Concepto">
-  </div>
-
-  <div class="button-group">
-    <button (click)="transferir()">Transferir</button>
-    <button (click)="cancelar()" type="button">Cancelar</button>
-  </div>
 </section>

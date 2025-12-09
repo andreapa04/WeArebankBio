@@ -21,6 +21,8 @@ export class RecuperarComponent {
   mensajeExito: string = '';
   bloqueado: boolean = false;
 
+  private apiUrl = '/api/auth'
+
   constructor(private http: HttpClient, private router: Router) {}
 
   buscarUsuario() {

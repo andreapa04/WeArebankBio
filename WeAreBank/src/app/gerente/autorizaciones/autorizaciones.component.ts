@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 interface SolicitudPrestamo {
@@ -26,7 +26,7 @@ interface SolicitudPrestamo {
 @Component({
   selector: 'app-autorizaciones',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './autorizaciones.component.html',
   styleUrls: ['./autorizaciones.component.css']
 })

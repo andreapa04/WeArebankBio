@@ -36,6 +36,8 @@ export class RegisterComponent {
 
   mensajeError: string = '';
 
+  private apiUrl = '/api/auth/register'
+
   constructor(private router: Router, private http: HttpClient) {}
 
   onFileSelected(event: Event) {

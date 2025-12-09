@@ -1,13 +1,10 @@
 import express from "express";
 import pool from "../db.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const router = express.Router();
 
-/**
- * LOGIN
- * ¡MODIFICADO! Ahora incluye la carga de permisos para roles 1 y 2.
- */
 router.post("/login", async (req, res) => {
   try {
     const { email, contrasenia } = req.body;
@@ -25,46 +22,33 @@ router.post("/login", async (req, res) => {
     const user = rows[0];
 
     if (user.estatus != "ACTIVO")
-      return res.status(403).json({ error: "Cuenta bloqueada. Acude con un ejecutivo." });
-
+      return res.status(403).json({ error: "Cuenta bloqueada." });
 
     if (user.bloqueado)
-      return res.status(403).json({ error: "Cuenta cerrada, en caso de error acude con un ejecutivo." });
+      return res.status(403).json({ error: "Cuenta cerrada." });
 
     const coincide = await bcrypt.compare(contrasenia, user.contrasenia);
 
     if (!coincide) {
       const nuevosIntentos = user.intentosFallidos + 1;
+      // ... lógica de bloqueo ...
       if (nuevosIntentos >= 3) {
         await pool.query("UPDATE usuario SET bloqueado = TRUE, intentosFallidos = ? WHERE idUsuario = ?", [nuevosIntentos, user.idUsuario]);
-        return res.status(403).json({ error: "Cuenta bloqueada tras 3 intentos fallidos." });
+        return res.status(403).json({ error: "Cuenta bloqueada tras 3 intentos." });
       } else {
         await pool.query("UPDATE usuario SET intentosFallidos = ? WHERE idUsuario = ?", [nuevosIntentos, user.idUsuario]);
-        return res.status(401).json({ error: `Contraseña incorrecta. Intento ${nuevosIntentos} de 3.` });
+        return res.status(401).json({ error: "Contraseña incorrecta." });
       }
     }
 
     await pool.query("UPDATE usuario SET intentosFallidos = 0 WHERE idUsuario = ?", [user.idUsuario]);
 
+    // Cargar permisos
     let permisos = [];
-    
-    // Si es Gerente (1) o Ejecutivo (2), cargamos sus permisos
-    if (user.idRol === 2) {
-      let queryPermisos = '';
-
-      if (user.idRol === 1) {
-        // El Gerente (Rol 1) tiene TODOS los permisos
-        queryPermisos = `SELECT nombrePermiso FROM Permisos`;
-      } else {
-        // El Ejecutivo (Rol 2) tiene permisos específicos de Usuario_Permiso
-        queryPermisos = `
-          SELECT p.nombrePermiso
-          FROM Usuario_Permiso up
-          JOIN Permisos p ON up.idPermiso = p.idPermiso
-          WHERE up.idUsuario = ?
-        `;
-      }
-
+    if (user.idRol === 2 || user.idRol === 1) {
+      let queryPermisos = (user.idRol === 1) 
+        ? `SELECT nombrePermiso FROM Permisos`
+        : `SELECT p.nombrePermiso FROM Usuario_Permiso up JOIN Permisos p ON up.idPermiso = p.idPermiso WHERE up.idUsuario = ?`;
       const [permisosRows] = await pool.query(queryPermisos, [user.idUsuario]);
       permisos = permisosRows.map(p => p.nombrePermiso);
     }
@@ -75,9 +59,8 @@ router.post("/login", async (req, res) => {
         id: user.idUsuario,
         nombre: user.nombre,
         apellidoP: user.apellidoP,
-        apellidoM: user.apellidoM,
         rol: user.idRol,
-        permisos: permisos // 🔽 Array de permisos
+        permisos: permisos
       },
     });
   } catch (err) {

@@ -1,3 +1,11 @@
+/* 👇 NUEVO: Asegura que el componente ocupe toda la pantalla y permita scroll */
+:host {
+  display: block;
+  height: 100vh;      /* Altura completa de la ventana */
+  overflow-y: auto;   /* Habilita el scroll vertical */
+  background-color: #f4f4f4; /* Fondo gris claro detrás del contenedor */
+}
+
 .register-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -89,4 +97,23 @@ legend {
 
 .submit-button:hover {
   background-color: #716faf;
+}
+
+/* 👇 NUEVO: Ajustes específicos para celulares */
+@media (max-width: 768px) {
+  .register-container {
+    margin: 0;       /* Quita márgenes externos */
+    padding: 1rem;   /* Reduce el padding interno */
+    width: 100%;     /* Ocupa todo el ancho */
+    box-shadow: none; /* Quita la sombra para diseño plano en móvil */
+    border-radius: 0;
+    
+    /* Espacio extra abajo vital para poder hacer scroll hasta el botón */
+    padding-bottom: 120px; 
+    margin-bottom: 20px;
+  }
+
+  fieldset {
+    padding: 1rem; /* Reduce padding en los grupos de campos */
+  }
 }

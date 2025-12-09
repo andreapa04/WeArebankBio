@@ -278,3 +278,16 @@ p[style*="color: red"] {
   font-weight: bold;
   box-sizing: border-box;
 }
+
+.biometric-btn {
+  background: #5D5B9D; /* Verde para indicar seguridad/biometría */
+  margin-top: 10px;    /* Separación del botón principal */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Espacio entre ícono y texto */
+}
+
+.biometric-btn:hover {
+  background: #218838;
+}
