@@ -1,0 +1,64 @@
+<h2>Centro de Autorizaciones (Créditos y Préstamos)</h2>
+
+<div class="tabs">
+  <button [class.active]="vista === 'PENDIENTES'" (click)="vista = 'PENDIENTES'">
+    Pendientes ({{ autorizacionesPendientes.length }})
+  </button>
+  <button [class.active]="vista === 'HISTORIAL'" (click)="vista = 'HISTORIAL'">
+    Historial
+  </button>
+</div>
+
+<div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+<div *ngIf="vista === 'PENDIENTES'" class="vista-container">
+  <h3>Autorizaciones Pendientes de Revisión</h3>
+  <div *ngIf="autorizacionesPendientes.length === 0">No hay autorizaciones pendientes.</div>
+
+  <div *ngFor="let s of autorizacionesPendientes" class="solicitud-card">
+    <div class="card-header">
+      <h4>{{ s.tipo.replace('_', ' ') }}</h4>
+      <span class="monto">{{ s.montoTotal | currency }}</span>
+    </div>
+    <div class="card-body">
+      <p><strong>Cliente:</strong> {{ s.nombre }} {{ s.apellidoP }} ({{ s.email }})</p>
+      <p><strong>CURP:</strong> {{ s.CURP }}</p>
+      <p><strong>Plazo:</strong> {{ s.plazo }}</p>
+      <div class="buro-info" [class.riesgo]="(s.puntaje || 0) < 650">
+        <strong>Buró:</strong> {{ s.puntaje || 'N/A' }} Puntos (Consultado: {{ s.fechaConsulta | date:'shortDate' }})
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn-aprobar" (click)="procesarSolicitud(s.idSolicitud, true)">Aprobar</button>
+      <button class="btn-rechazar" (click)="procesarSolicitud(s.idSolicitud, false)">Rechazar</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="vista === 'HISTORIAL'" class="vista-container">
+  <h3>Historial de Autorizaciones</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Tipo</th>
+        <th>Monto</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of autorizacionesHistorial">
+        <td>{{ s.idSolicitud }}</td>
+        <td>{{ s.nombre }} {{ s.apellidoP }}</td>
+        <td>{{ s.tipo.replace('_', ' ') }}</td>
+        <td>{{ s.montoTotal | currency }}</td>
+        <td>
+          <span class="status" [ngClass]="s.estado.toLowerCase()">{{ s.estado }}</span>
+        </td>
+        <td>{{ s.fechaSolicitud | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

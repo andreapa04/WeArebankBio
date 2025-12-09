@@ -1,0 +1,146 @@
+<div class="gerente-container">
+  
+  <div *ngIf="mensaje" class="mensaje success">{{ mensaje }}</div>
+  <div *ngIf="error" class="mensaje error">{{ error }}</div>
+
+  <div class="vista-container" style="margin-bottom: 2rem; border-top: 4px solid #dc3545;">
+    <h3 style="color: #dc3545;">Solicitudes de Cierre de Cuenta</h3>
+    <p>Administre las solicitudes de baja de clientes. Si aprueba, la cuenta se cerrará permanentemente.</p>
+    
+    <table class="ejecutivos-table" *ngIf="solicitudesCierre.length > 0; else noCierres">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of solicitudesCierre">
+          <td>{{ s.fechaSolicitud | date:'short' }}</td>
+          <td>{{ s.nombre }} {{ s.apellidoP }}</td>
+          <td>{{ s.email }}</td>
+          <td>
+            <button class="btn-principal" style="background-color: #28a745; margin-right: 5px;" (click)="procesarCierre(s.idSolicitudCierre, true)">
+              Aprobar Cierre
+            </button>
+            <button class="btn-peligro" (click)="procesarCierre(s.idSolicitudCierre, false)">
+              Rechazar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noCierres>
+      <p>No hay solicitudes de cierre pendientes.</p>
+    </ng-template>
+  </div>
+
+  <hr>
+
+  <div class="form-container vista-container">
+    <h3>Registrar Nuevo Ejecutivo (Rol 2)</h3>
+    
+    <form (ngSubmit)="agregarEjecutivo()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre(s):</label>
+          <input [(ngModel)]="formEjecutivo.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label>Apellido Paterno:</label>
+          <input [(ngModel)]="formEjecutivo.apellidoP" name="apellidoP" required>
+        </div>
+        <div class="form-group">
+          <label>Apellido Materno:</label>
+          <input [(ngModel)]="formEjecutivo.apellidoM" name="apellidoM" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Fecha de Nacimiento:</label>
+          <input type="date" [(ngModel)]="formEjecutivo.fechaNacimiento" name="fechaNacimiento" required>
+        </div>
+        <div class="form-group">
+          <label>Teléfono:</label>
+          <input type="tel" [(ngModel)]="formEjecutivo.telefono" name="telefono" required>
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" [(ngModel)]="formEjecutivo.email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label>CURP:</label>
+          <input [(ngModel)]="formEjecutivo.CURP" name="CURP" required>
+        </div>
+        <div class="form-group">
+          <label>RFC:</label>
+          <input [(ngModel)]="formEjecutivo.RFC" name="RFC" required>
+        </div>
+        <div class="form-group">
+          <label>INE (Folio):</label>
+          <input [(ngModel)]="formEjecutivo.INE" name="INE" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Dirección:</label>
+          <input [(ngModel)]="formEjecutivo.direccion" name="direccion" required placeholder="Calle, Número, Colonia, Ciudad, Estado, CP">
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña Provisional:</label>
+          <input type="password" [(ngModel)]="formEjecutivo.contrasenia" name="contrasenia" required>
+        </div>
+        <div class="form-group">
+          <label>Pregunta de Seguridad:</label>
+          <input [(ngModel)]="formEjecutivo.preguntaSeguridad" name="preguntaSeguridad" required>
+        </div>
+        <div class="form-group">
+          <label>Respuesta de Seguridad:</label>
+          <input [(ngModel)]="formEjecutivo.respuestaSeguridad" name="respuestaSeguridad" required>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn-principal">Agregar Ejecutivo</button>
+    </form>
+  </div>
+
+  <hr>
+
+  <div class="ejecutivos-section vista-container">
+    <h2>Administrar Ejecutivos (Rol 2)</h2>
+    
+    <table class="ejecutivos-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Estatus</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ej of ejecutivos">
+          <td>{{ ej.idUsuario }}</td>
+          <td>{{ ej.nombre }} {{ ej.apellidoP }} {{ ej.apellidoM }}</td>
+          <td>{{ ej.email }}</td>
+          <td>
+            <span class="status" [class.activo]="ej.estatus === 'ACTIVO'" [class.inactivo]="ej.estatus !== 'ACTIVO'">
+              {{ ej.estatus }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-peligro" (click)="eliminarEjecutivo(ej.idUsuario)">
+              Desactivar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="ejecutivos.length === 0">
+          <td colspan="5">No se encontraron ejecutivos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<h2>Consultar Clientes</h2>
+<p>Busca y selecciona un cliente para ver sus cuentas y movimientos.</p>
+
+<input type="text" [(ngModel)]="filtro" placeholder="Buscar por nombre, email, CURP o RFC..." class="filtro">
+
+<table class="tabla-clientes">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th>RFC</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let c of clientesFiltrados">
+      <tr class="fila-cliente">
+        <td (click)="verDetalle(c)">{{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</td>
+        <td (click)="verDetalle(c)">{{ c.email }}</td>
+        <td (click)="verDetalle(c)">{{ c.telefono }}</td>
+        <td (click)="verDetalle(c)">{{ c.RFC }}</td>
+        <td>
+          <button (click)="verDetalle(c)">
+            {{ clienteSeleccionado?.idUsuario === c.idUsuario ? 'Ocultar' : 'Ver Detalle' }}
+          </button>
+          
+          <button 
+            *ngIf="authService.tienePermiso('MODIFICAR_DATOS_CLIENTE') && clienteSeleccionado?.idUsuario === c.idUsuario" 
+            (click)="clienteEnEdicion ? cancelarEdicion() : modificarCliente(c)" 
+            class="btn-secundario"
+            style="margin-left: 8px;">
+            {{ clienteEnEdicion ? 'Cancelar Edición' : 'Modificar Datos' }}
+          </button>
+        </td>
+      </tr>
+      
+      <tr *ngIf="clienteSeleccionado?.idUsuario === c.idUsuario" class="fila-detalle">
+        <td colspan="5">
+          <div *ngIf="cargandoDetalle">Cargando...</div>
+          
+          <div *ngIf="!cargandoDetalle" class="detalle-contenido">
+
+            <div *ngIf="mensajeExito" class="mensaje success">{{ mensajeExito }}</div>
+            <div *ngIf="mensajeError" class="mensaje error">{{ mensajeError }}</div>
+
+            <h4>Datos Personales de {{ c.nombre }}</h4>
+            
+            <div *ngIf="!clienteEnEdicion" class="vista-datos">
+              <div class="dato-item"><strong>Nombre:</strong> {{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</div>
+              <div class="dato-item"><strong>Email:</strong> {{ c.email }}</div>
+              <div class="dato-item"><strong>Teléfono:</strong> {{ c.telefono }}</div>
+              <div class="dato-item"><strong>RFC:</strong> {{ c.RFC }}</div>
+              <div class="dato-item"><strong>CURP:</strong> {{ c.CURP }}</div>
+              <div class="dato-item full-width"><strong>Dirección:</strong> {{ c.direccion }}</div>
+            </div>
+
+            <form *ngIf="clienteEnEdicion" (ngSubmit)="guardarCambios()" class="form-edicion">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Nombre(s)</label>
+                  <input [(ngModel)]="clienteEnEdicion.nombre" name="nombre">
+                </div>
+                <div class="form-group">
+                  <label>Apellido Paterno</label>
+                  <input [(ngModel)]="clienteEnEdicion.apellidoP" name="apellidoP">
+                </div>
+                <div class="form-group">
+                  <label>Apellido Materno</label>
+                  <input [(ngModel)]="clienteEnEdicion.apellidoM" name="apellidoM">
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" [(ngModel)]="clienteEnEdicion.email" name="email">
+                </div>
+                <div class="form-group">
+                  <label>Teléfono</label>
+                  <input type="tel" [(ngModel)]="clienteEnEdicion.telefono" name="telefono">
+                </div>
+                <div class="form-group full-width">
+                  <label>Dirección</label>
+                  <input [(ngModel)]="clienteEnEdicion.direccion" name="direccion">
+                </div>
+                <div class="form-group">
+                  <label>RFC (No editable)</label>
+                  <input [(ngModel)]="clienteEnEdicion.RFC" name="RFC" disabled>
+                </div>
+                <div class="form-group">
+                  <label>CURP (No editable)</label>
+                  <input [(ngModel)]="clienteEnEdicion.CURP" name="CURP" disabled>
+                </div>
+              </div>
+              <button type="submit" class="btn-principal">Guardar Cambios</button>
+              <button type="button" class="btn-secundario" (click)="cancelarEdicion()">Cancelar</button>
+            </form>
+            
+            <hr> <h4>Cuentas de {{ c.nombre }}</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>CLABE</th>
+                  <th>Tipo</th>
+                  <th>Saldo</th>
+                  <th *ngIf="authService.tienePermiso('GENERAR_ESTADO_CUENTA')">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cuenta of cuentasCliente">
+                  <td>{{ cuenta.clabe }}</td>
+                  <td>{{ cuenta.tipoCuenta }}</td>
+                  <td>{{ cuenta.saldo | currency }}</td>
+                  <td *ngIf="authService.tienePermiso('GENERAR_ESTADO_CUENTA')">
+                    <button class="btn-secundario" (click)="descargarEstadoCuenta(cuenta.clabe)">
+                      Descargar PDF
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Últimos Movimientos</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of movimientosCliente">
+                  <td>{{ m.fechaHora | date:'short' }}</td>
+                  <td>{{ m.tipoMovimiento }}</td>
+                  <td [class.positivo]="m.monto > 0" [class.negativo]="m.monto < 0">
+                    {{ m.monto | currency }}
+                  </td>
+                </tr>
+                <tr *ngIf="movimientosCliente.length === 0">
+                  <td colspan="3">No hay movimientos.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>

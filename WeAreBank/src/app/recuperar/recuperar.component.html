@@ -1,0 +1,25 @@
+<div class="recover-container">
+  <h2>Recuperar contraseña</h2>
+
+  <form *ngIf="paso === 1" (ngSubmit)="buscarUsuario()">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" name="email" required>
+    <button type="submit" [disabled]="bloqueado">Siguiente</button>
+  </form>
+
+  <form *ngIf="paso === 2" (ngSubmit)="verificarRespuesta()">
+    <label>Pregunta de seguridad: {{ pregunta }}</label>
+    <input type="text" [(ngModel)]="respuesta" name="respuesta" required>
+    <button type="submit">Verificar</button>
+  </form>
+
+  <form *ngIf="paso === 3" (ngSubmit)="cambiarContrasenia()">
+    <label>Nueva contraseña</label>
+    <input type="password" [(ngModel)]="nuevaContrasenia" name="nuevaContrasenia" required>
+    <button type="submit">Cambiar contraseña</button>
+    <button type="button" class="btn-secundario" (click)="cancelar()">Cancelar</button>
+  </form>
+
+  <p *ngIf="mensajeError" class="error-msg">{{ mensajeError }}</p>
+  <p *ngIf="mensajeExito" class="success-msg">{{ mensajeExito }}</p>
+</div>

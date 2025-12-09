@@ -1,0 +1,91 @@
+<div class="container mt-4">
+  <h2 class="mb-3 text-center">Gestión de Solicitudes</h2>
+
+  <div class="vista-container" style="margin-bottom: 2rem; border-left: 5px solid #dc3545;">
+    <h3>Solicitudes de Cierre de Cuenta</h3>
+    <p>Clientes que han solicitado dar de baja su cuenta.</p>
+
+    <table class="table" *ngIf="solicitudesCierre.length > 0; else noCierres">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sol of solicitudesCierre">
+          <td>{{ sol.fechaSolicitud | date:'short' }}</td>
+          <td>{{ sol.nombre }} {{ sol.apellidoP }}</td>
+          <td>{{ sol.email }}</td>
+          <td>
+            <button class="btn-aprobar" (click)="procesarCierre(sol.idSolicitudCierre, true)">Autorizar Cierre</button>
+            <button class="btn-rechazar" (click)="procesarCierre(sol.idSolicitudCierre, false)">Rechazar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noCierres><p>No hay solicitudes de cierre pendientes.</p></ng-template>
+  </div>
+
+  <hr>
+
+  <h4>Solicitudes de Préstamo Pendientes</h4>
+  <table class="table table-striped" *ngIf="pendientes.length > 0; else noPendientes">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Monto</th>
+        <th>Tipo</th>
+        <th>Puntaje</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let solicitud of pendientes">
+        <td>{{ solicitud.idSolicitud }}</td>
+        <td>{{ solicitud.nombre }} {{ solicitud.apellidoP }}</td>
+        <td>${{ solicitud.montoTotal }}</td>
+        <td>{{ solicitud.tipo }}</td>
+        <td>
+          <span class="buro-info" [class.riesgo]="(solicitud.puntaje || 0) < 650">
+            {{ solicitud.puntaje || 'N/A' }}
+          </span>
+        </td>
+        <td>
+          <button class="btn-aprobar" (click)="procesarSolicitud(solicitud.idSolicitud, true)">Aprobar</button>
+          <button class="btn-rechazar" (click)="procesarSolicitud(solicitud.idSolicitud, false)">Rechazar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noPendientes><p>No hay solicitudes de préstamo pendientes.</p></ng-template>
+
+  <div class="mt-4">
+    <h4>Historial de Préstamos</h4>
+    <table class="table table-hover" *ngIf="historial.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Monto</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let solicitud of historial">
+          <td>{{ solicitud.idSolicitud }}</td>
+          <td>{{ solicitud.nombre }} {{ solicitud.apellidoP }}</td>
+          <td>${{ solicitud.montoTotal }}</td>
+          <td>{{ solicitud.tipo }}</td>
+          <td><span class="status" [ngClass]="solicitud.estado.toLowerCase()">{{ solicitud.estado }}</span></td>
+          <td>{{ solicitud.fechaSolicitud | date:'shortDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

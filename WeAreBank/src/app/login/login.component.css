@@ -1,0 +1,280 @@
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+body {
+  min-width: 100vw;
+  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Fondo gradiente animado como capa base */
+.background-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: linear-gradient(120deg,
+    #241c45 0%,
+    #31296E 35%,
+    #443A8C 60%,
+    #5D5B9D 85%,
+    #3A2D65 100%
+  );
+  background-size: 350% 350%;
+  animation: gradientAnimation 14s ease-in-out infinite;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+/* Burbujeo (capa intermedia, nunca encima del form) */
+.bubbles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.48;
+  animation: moveBubble 16s linear infinite;
+  filter: blur(2px);
+}
+
+/* Cada burbuja con color y tamaño diferente */
+.bubble:nth-child(1) { width: 60px; height: 60px; left: 5vw;  top: 70vh; background: #5D5B9D; animation-delay: 5s;}
+.bubble:nth-child(2) { width: 40px; height: 40px; left: 80vw; top: 85vh; background: #8988C1; animation-delay: 2s;}
+.bubble:nth-child(3) { width: 90px; height: 90px; left: 60vw; top: 60vh; background: #716FAF; animation-delay: 4s;}
+.bubble:nth-child(4) { width: 50px; height: 50px; left: 20vw; top: 90vh; background: #6361A2; animation-delay: 3s;}
+.bubble:nth-child(5) { width: 80px; height: 80px; left: 50vw; top: 78vh; background: #B2B0D5; animation-delay: 1s;}
+.bubble:nth-child(6) { width: 35px; height: 35px; left: 67vw; top: 96vh; background: #5D5B9D; animation-delay: 2s;}
+.bubble:nth-child(7) { width: 100px; height: 100px; left: 14vw; top: 50vh; background: #716FAF; animation-delay: 2s;}
+
+@keyframes moveBubble {
+  0%   { transform: translateY(0) scale(1) rotate(0deg);}
+  50%  { transform: translateY(-70vh) scale(1.2) rotate(40deg);}
+  100% { transform: translateY(-100vh) scale(0.8) rotate(360deg);}
+}
+
+@keyframes gradientAnimation {
+  0%    { background-position: 0% 35%; filter: hue-rotate(0deg);}
+  25%   { background-position: 50% 65%; filter: hue-rotate(-24deg);}
+  50%   { background-position: 100% 40%; filter: hue-rotate(22deg);}
+  75%   { background-position: 50% 60%; filter: hue-rotate(-20deg);}
+  100%  { background-position: 0% 35%; filter: hue-rotate(0deg);}
+}
+
+/* Contenido centrado, siempre arriba de burbujas/fondo */
+.center-content,
+.login-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: transparent;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 98vw;
+  max-height: 98vh;
+  padding: 0;
+  overflow: visible;
+}
+
+/* Logo responsivo */
+.bank-logo {
+  width: 850px;
+  max-width: 96vw;
+  height: 150px;
+  max-height: 22vw;
+  background: none;
+  background-image: url('../../../public/assets/logoPrincipal.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  display: block;
+  margin-bottom: 2.2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Caja de login responsiva */
+.login-form {
+  background: rgba(255,255,255,0.96);
+  padding: 2.6rem 3rem 2rem 3rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(93, 91, 157, 0.18);
+  width: 360px;
+  max-width: 96vw;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+@media (max-width: 600px) {
+  .bank-logo {
+    width: 90vw;
+    height: 60px;
+    max-height: 20vw;
+    margin-bottom: 1rem;
+  }
+  .login-form {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+    border-radius: 10px;
+    width: 98vw;
+    max-width: 100vw;
+  }
+  .form-group label, .login-footer p {
+    font-size: 0.95rem;
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.form-group {
+  margin-bottom: 1.8rem;
+}
+
+.form-group label {
+  color: #5D5B9D;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid #B2B0D5;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-family: inherit;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #716FAF;
+  box-shadow: 0 0 6px 2px #8988C130;
+}
+
+.form-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+  color: #6361A2;
+  font-size: 0.97rem;
+}
+
+.forgotpassword {
+  color: #716FAF;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+  align-self: center;
+  text-align: center;
+  width: 100%;
+}
+.forgotpassword:hover {
+  color: #6361A2;
+  text-decoration: underline;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #5D5B9D;
+}
+.checkbox-label input {
+  margin-right: 0.5rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.login-button,
+.register-button {
+  padding: 0.85rem 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.03rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.22s, box-shadow 0.22s;
+  width: 100%;
+  box-shadow: 0 2px 8px #B2B0D538;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-button {
+  background-color: #5D5B9D;
+  color: #fff;
+}
+.login-button:hover {
+  background-color: #6361A2;
+}
+.register-button {
+  background-color: #716FAF;
+  color: #fff;
+}
+.register-button:hover {
+  background-color: #8988C1;
+}
+
+.login-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #B2B0D5;
+}
+.login-footer p {
+  color: #6361A2;
+  font-size: 0.89rem;
+}
+
+p[style*="color: red"] {
+  margin: 0;
+  background: #fff2f2;
+  border-radius: 6px;
+  border: 1px solid #ffe4e4;
+  color: #B22222 !important;
+  font-size: 0.99rem;
+  padding: 5px 3px;
+  font-weight: bold;
+  box-sizing: border-box;
+}

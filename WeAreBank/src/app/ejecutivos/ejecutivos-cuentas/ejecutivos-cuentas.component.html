@@ -1,0 +1,108 @@
+<h2>Administrar Cuentas</h2>
+
+<div class="tabs">
+  <button [class.active]="vista === 'cartera'" (click)="vista = 'cartera'">Cartera de Cuentas</button>
+  
+  <button 
+    *ngIf="authService.tienePermiso('CREAR_CLIENTE')"
+    [class.active]="vista === 'agregar'" 
+    (click)="vista = 'agregar'">
+    Agregar Nuevo Cliente
+  </button>
+</div>
+
+<div *ngIf="vista === 'cartera'" class="vista-container">
+  <h3>Cartera de Cuentas</h3>
+  <input type="text" [(ngModel)]="filtro" placeholder="Filtrar por nombre, email o CLABE..." class="filtro">
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Email</th>
+        <th>CLABE</th>
+        <th>Tipo</th>
+        <th>Saldo</th>
+        <th *ngIf="authService.tienePermiso('ELIMINAR_CUENTA')">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of carteraFiltrada">
+        <td>{{ c.nombre }} {{ c.apellidoP }}</td>
+        <td>{{ c.email }}</td>
+        <td>{{ c.clabe }}</td>
+        <td>{{ c.tipoCuenta }}</td>
+        <td>{{ c.saldo | currency }}</td>
+        
+        <td *ngIf="authService.tienePermiso('ELIMINAR_CUENTA')">
+          <button class="btn-peligro" (click)="eliminarCuenta(c.idCuenta)">Cerrar Cuenta</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="vista === 'agregar' && authService.tienePermiso('CREAR_CLIENTE')" class="vista-container">
+  <h3>Formulario de Nuevo Cliente</h3>
+  <p>Al agregar un cliente, se asignará una cuenta de ahorro inicial y una tarjeta de débito asociada.</p>
+  
+  <form (ngSubmit)="agregarCliente()">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre(s):</label>
+        <input [(ngModel)]="formCliente.nombre" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label>Apellido Paterno:</label>
+        <input [(ngModel)]="formCliente.apellidoP" name="apellidoP" required>
+      </div>
+      <div class="form-group">
+        <label>Apellido Materno:</label>
+        <input [(ngModel)]="formCliente.apellidoM" name="apellidoM" required>
+      </div>
+      <div class="form-group">
+        <label>Fecha de Nacimiento:</label>
+        <input type="date" [(ngModel)]="formCliente.fechaNacimiento" name="fechaNacimiento" required>
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input type="tel" [(ngModel)]="formCliente.telefono" name="telefono" required>
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" [(ngModel)]="formCliente.email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña Provisional:</label>
+        <input type="password" [(ngModel)]="formCliente.contrasenia" name="contrasenia" required>
+      </div>
+      <div class="form-group">
+        <label>CURP:</label>
+        <input [(ngModel)]="formCliente.CURP" name="CURP" required>
+      </div>
+      <div class="form-group">
+        <label>RFC:</label>
+        <input [(ngModel)]="formCliente.RFC" name="RFC" required>
+      </div>
+      <div class="form-group">
+        <label>INE (Folio):</label>
+        <input [(ngModel)]="formCliente.INE" name="INE" required>
+      </div>
+      <div class="form-group full-width">
+        <label>Dirección:</label>
+        <input [(ngModel)]="formCliente.direccion" name="direccion" required placeholder="Calle, Número, Colonia, Ciudad, Estado, CP">
+      </div>
+      <div class="form-group">
+        <label>Pregunta de Seguridad:</label>
+        <input [(ngModel)]="formCliente.preguntaSeguridad" name="preguntaSeguridad" required>
+      </div>
+      <div class="form-group">
+        <label>Respuesta de Seguridad:</label>
+        <input [(ngModel)]="formCliente.respuestaSeguridad" name="respuestaSeguridad" required>
+      </div>
+    </div>
+    <button type="submit" class="btn-principal">Registrar Cliente</button>
+  </form>
+  
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+</div>

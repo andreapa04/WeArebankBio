@@ -1,0 +1,135 @@
+.container-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .container-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vista-container {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+h2, h3 {
+  color: #31296E;
+  border-bottom: 2px solid #716FAF;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+h3 strong {
+  color: #5D5B9D;
+}
+
+.columna-ejecutivos h2 {
+  font-size: 1.4rem;
+}
+
+.columna-permisos h2 {
+  font-size: 1.4rem;
+}
+
+.lista-ejecutivos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 600px;
+  overflow-y: auto;
+}
+.lista-ejecutivos li {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+.lista-ejecutivos li span {
+  display: block;
+  font-size: 0.9rem;
+  color: #555;
+}
+.lista-ejecutivos li:hover {
+  background-color: #f4f3f8;
+}
+.lista-ejecutivos li.activo {
+  background-color: #716FAF;
+  color: white;
+  border-left: 4px solid #31296E;
+}
+.lista-ejecutivos li.activo span {
+  color: #f0f0f0;
+}
+
+
+/* Tabla de Permisos */
+.permisos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+.permisos-table th, 
+.permisos-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  vertical-align: middle;
+}
+.permisos-table th {
+  background-color: #f9f9f9;
+  font-size: 0.9rem;
+  color: #555;
+}
+.permisos-table td:last-child {
+  text-align: center;
+}
+.permisos-table input[type="checkbox"] {
+  width: 1.3rem;
+  height: 1.3rem;
+  cursor: pointer;
+}
+
+/* Botones y Mensajes */
+.save-btn {
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: #716FAF;
+  color: white;
+  transition: background-color 0.2s;
+}
+.save-btn:hover:not(:disabled) {
+  background-color: #5D5B9D;
+}
+.save-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.mensaje {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}
+.mensaje.success {
+  background-color: #e6f7ec;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.mensaje.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}

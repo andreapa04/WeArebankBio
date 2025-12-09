@@ -1,0 +1,63 @@
+<div class="container">
+  <h2>Solicitud de Crédito</h2>
+
+  <div class="form-section">
+    <label>Cuenta origen:</label>
+    <select [(ngModel)]="idCuentaSeleccionada">
+      <option [value]="null">Selecciona una cuenta</option>
+      <option *ngFor="let c of cuentas" [value]="c.idCuenta">
+        {{ c.tipoCuenta }} • ****{{ c.clabe.slice(-4) }} • Saldo: {{ c.saldo | currency }}
+      </option>
+    </select>
+
+    <label>Monto solicitado:</label>
+    <input type="number" [(ngModel)]="monto" placeholder="Ej. 150000" />
+
+    <label>Plazo (meses):</label>
+    <input type="text" [(ngModel)]="plazo" placeholder="Ej. 48 meses" />
+
+    <label>Tipo de crédito:</label>
+    <select [(ngModel)]="tipo">
+      <option value="CREDITO_AUTOMOTRIZ">Crédito Automotriz</option>
+      <option value="CREDITO_HIPOTECARIO">Crédito Hipotecario</option>
+      <option value="CREDITO_PYME">Crédito PyME</option>
+    </select>
+
+    <button (click)="solicitarCredito()">Solicitar crédito</button>
+    <p *ngIf="mensaje" class="mensaje">{{ mensaje }}</p>
+  </div>
+
+  <hr />
+
+  <h3>Historial de solicitudes de Crédito</h3>
+  <table *ngIf="solicitudes.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Cuenta</th>
+        <th>Tipo</th>
+        <th>Monto</th>
+        <th>Plazo</th>
+        <th>Interés</th>
+        <th>CAT</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of solicitudes">
+        <td>{{ s.fechaSolicitud | date:'short' }}</td>
+        <td>****{{ s.clabe.slice(-4) }}</td>
+        <td>{{ s.tipo.replace('CREDITO_', '') }}</td>
+        <td>${{ s.montoTotal | number:'1.2-2' }}</td>
+        <td>{{ s.plazo }}</td>
+        <td>{{ s.intereses }}%</td>
+        <td>{{ s.cat }}%</td>
+        <td>{{ s.estado }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p>No tienes solicitudes de crédito registradas aún.</p>
+  </ng-template>
+</div>

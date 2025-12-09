@@ -1,0 +1,57 @@
+<section class="transfer-section">
+  <h2>Realizar transferencia</h2>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  <div *ngIf="mensaje" class="success-message">{{ mensaje }}</div>
+
+  <div class="tipo-switch">
+    <label><input type="radio" name="tipo" (click)="onTipoCambio('INTERNA')" [checked]="tipo==='INTERNA'"> Interna</label>
+    <label><input type="radio" name="tipo" (click)="onTipoCambio('EXTERNA')" [checked]="tipo==='EXTERNA'"> Externa</label>
+  </div>
+
+  <div class="form-group">
+    <label>Cuenta origen:</label>
+    <select [(ngModel)]="cuentaOrigen" name="cuentaOrigen">
+      <option [ngValue]="null">Seleccionar</option>
+      <option *ngFor="let c of cuentas" [ngValue]="c.idCuenta">
+        {{ c.tipoCuenta }} • ****{{ c.clabe.slice(-4) }} • Saldo: {{ c.saldo | currency }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="tipo==='INTERNA'" class="form-group">
+    <label>Cuenta destino (puede ser CLABE o ID interno):</label>
+    <input [(ngModel)]="cuentaDestino" name="cuentaDestino" placeholder="Ej: 123456789012345678">
+  </div>
+
+  <div *ngIf="tipo==='EXTERNA'">
+    <div class="form-group">
+      <label>Destino (CLABE / cuenta):</label>
+      <input [(ngModel)]="destinoExterno" name="destinoExterno" placeholder="CLABE o número">
+    </div>
+    <div class="form-group">
+      <label>Banco destino:</label>
+      <input [(ngModel)]="bancoDestino" name="bancoDestino" placeholder="Nombre del banco">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Monto a transferir:</label>
+    <input type="number" [(ngModel)]="monto" (input)="calcularComisionYTotal()" name="monto" min="0" step="0.01">
+  </div>
+
+  <div class="info">
+    <p>Comisión (7%): <strong>{{ comision | currency }}</strong></p>
+    <p>Monto que se descontará de tu cuenta: <strong>{{ totalARetirar | currency }}</strong></p>
+  </div>
+
+  <div class="form-group">
+    <label>Concepto</label>
+    <input [(ngModel)]="concepto" name="concepto" placeholder="Concepto">
+  </div>
+
+  <div class="button-group">
+    <button (click)="transferir()">Transferir</button>
+    <button (click)="cancelar()" type="button">Cancelar</button>
+  </div>
+</section>

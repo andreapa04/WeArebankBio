@@ -1,0 +1,67 @@
+<!-- Fondo gradiente animado -->
+<div class="background-gradient"></div>
+
+<!-- Burbujas animadas entre fondo y contenido -->
+<div class="bubbles">
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+  <span class="bubble"></span>
+</div>
+
+<!-- Contenido centrado (logo y formulario) -->
+<div class="center-content">
+  <div class="bank-logo"></div>
+  <div class="login-header">
+    <h1>WeAreBank</h1>
+    <h2>Inicia sesión</h2>
+  </div>
+  <div class="login-form">
+    <div class="form-group">
+      <label for="email">Ingresa correo</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="Correo electrónico"
+        class="form-input"
+        required>
+    </div>
+    <div class="form-group">
+      <label for="contrasenia">Ingresa contraseña</label>
+      <input
+        type="password"
+        id="contrasenia"
+        name="contrasenia"
+        [(ngModel)]="contrasenia"
+        placeholder="Contraseña"
+        class="form-input"
+        required>
+    </div>
+    <div class="form-options">
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          id="recordarme"
+          name="recordarme">
+        <span>Recuérdame</span>
+      </label>
+      <a (click)="forgotpassword()" class="forgotpassword">¿Olvidaste tu contraseña?</a>
+    </div>
+    <div class="button-group">
+      <button type="button" (click)="iniciarSesion()" class="login-button">
+        Iniciar sesión
+      </button>
+      <a (click)="registrar()" class="register-button">Crear cuenta</a>
+    </div>
+    <p *ngIf="mensajeError" style="color: red; font-weight: bold;">{{ mensajeError }}</p>
+    <div class="login-footer">
+      <p>Al iniciar sesión, aceptas nuestros Términos y Condiciones</p>
+    </div>
+  </div>
+</div>
+

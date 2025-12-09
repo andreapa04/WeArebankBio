@@ -1,0 +1,123 @@
+<div class="container">
+  
+  <h2>Mis Cuentas</h2>
+  <p>Selecciona una cuenta para ver los movimientos.</p>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>CLABE</th>
+        <th>Tipo</th>
+        <th>Saldo disponible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr 
+        *ngFor="let cuenta of cuentas" 
+        (click)="seleccionarCuenta(cuenta)" 
+        style="cursor: pointer;"
+        [class.selected]="idCuentaSeleccionada === cuenta.idCuenta"
+      >
+        <td>{{ cuenta.clabe }}</td>
+        <td>{{ cuenta.tipoCuenta }}</td>
+        <td>{{ cuenta.saldo | currency }}</td>
+      </tr>
+      <tr *ngIf="cuentas.length === 0">
+        <td colspan="3">No tienes cuentas registradas.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-divider">Mis Tarjetas</h2>
+  <p>Haz clic en una tarjeta para ver su detalle y saldo.</p>
+  
+  <div class="card-grid" *ngIf="tarjetas.length > 0; else noTarjetas">
+    <div class="tarjeta" *ngFor="let tarjeta of tarjetas" 
+         [class.virtual]="tarjeta.esVirtual" 
+         [class.credito]="tarjeta.tipoTarjeta === 'CREDITO'"
+         (click)="seleccionarTarjeta(tarjeta)"
+         style="cursor: pointer;">
+      
+      <div class="card-header">
+        <span class="tipo-tarjeta">{{ tarjeta.tipoTarjeta }}</span>
+        <span class="banco-logo">WeAreBank</span>
+      </div>
+      
+      <div class="numero-tarjeta">
+        <span>****</span> <span>****</span> <span>****</span> <span>{{ tarjeta.numeroTarjeta | slice:12:16 }}</span>
+      </div>
+      
+      <div class="card-footer">
+        <span class="card-titular">{{ tarjeta.nombre }} {{ tarjeta.apellidoP }}</span>
+        <span class="vencimiento">Vence: {{ tarjeta.vencimiento | date:'MM/yy' }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="tarjetaSeleccionada" class="tarjeta-detalle-container" style="margin-top: 1.5rem; padding: 1.5rem; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; text-align: center;">
+    <h3 style="color: #5D5B9D; margin-top: 0;">Detalle de Tarjeta {{ tarjetaSeleccionada.tipoTarjeta }}</h3>
+    <p><strong>Titular:</strong> {{ tarjetaSeleccionada.nombre }} {{ tarjetaSeleccionada.apellidoP }}</p>
+    <p><strong>Número:</strong> **** **** **** {{ tarjetaSeleccionada.numeroTarjeta | slice:12:16 }}</p>
+    <p><strong>Estado:</strong> {{ tarjetaSeleccionada.estado || 'ACTIVA' }}</p>
+    
+    <div *ngIf="tarjetaSeleccionada.tipoTarjeta === 'CREDITO'">
+      <p style="font-size: 1.2rem;">
+        <strong>Crédito Aprobado/Disponible:</strong> 
+        <span style="color: #28a745;">{{ obtenerSaldoTarjeta(tarjetaSeleccionada) | currency }}</span>
+      </p>
+    </div>
+
+    <div *ngIf="tarjetaSeleccionada.tipoTarjeta === 'DEBITO'">
+      <p style="font-size: 1.2rem;">
+        <strong>Saldo en Cuenta:</strong> 
+        <span style="color: #28a745;">{{ obtenerSaldoTarjeta(tarjetaSeleccionada) | currency }}</span>
+      </p>
+      <small>(Saldo de ahorro + préstamos depositados)</small>
+    </div>
+    
+    <button (click)="tarjetaSeleccionada = null" class="btn-secundario" style="margin-top: 1rem;">Cerrar Detalle</button>
+  </div>
+  
+  <ng-template #noTarjetas>
+    <p>No tienes tarjetas asociadas.</p>
+  </ng-template>
+
+  <div *ngIf="idCuentaSeleccionada" class="movimientos-section">
+    <div class="movimientos-header">
+      <h3>Movimientos de la cuenta {{ cuentaSeleccionada?.clabe }}</h3>
+      <div class="pdf-section">
+        <button class="btn-pdf" (click)="descargarEstadoCuentaPDF()" [disabled]="cargandoPDF">
+          <span *ngIf="!cargandoPDF">📄 Descargar PDF</span>
+          <span *ngIf="cargandoPDF">⏳ Generando...</span>
+        </button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Fecha</th><th>Tipo</th><th>Monto</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mov of movimientos">
+          <td>{{ mov.fecha | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td>{{ mov.tipoMovimiento }}</td>
+          <td [ngClass]="{ 'positivo': mov.monto > 0, 'negativo': mov.monto < 0 }">
+            {{ mov.monto | currency:'MXN':'symbol' }}
+          </td>
+        </tr>
+        <tr *ngIf="movimientos.length === 0"><td colspan="3">No hay movimientos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-divider danger-zone-title">Zona de Peligro</h2>
+  <div class="danger-zone">
+    <div>
+      <h3>Cerrar Cuenta</h3>
+      <p>Solicitar cierre permanente. Irreversible tras aprobación.</p>
+    </div>
+    <button class="btn-danger" (click)="solicitarCierreCuenta()">Solicitar Cierre</button>
+  </div>
+  <div *ngIf="cierreMensaje" class="mensaje success" style="margin-top: 1rem;">{{ cierreMensaje }}</div>
+  <div *ngIf="cierreError" class="mensaje error" style="margin-top: 1rem;">{{ cierreError }}</div>
+
+</div>

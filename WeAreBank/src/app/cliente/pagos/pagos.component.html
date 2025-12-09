@@ -1,0 +1,154 @@
+<div class="container">
+  <h2>Gestión de Pagos</h2>
+
+  <div class="cuenta-selector">
+    <label>Selecciona una cuenta:</label>
+    <select [(ngModel)]="idCuentaSeleccionada">
+      <option [value]="null">Seleccionar</option>
+      <option *ngFor="let cuenta of cuentas" [value]="cuenta.idCuenta">
+        {{ cuenta.tipoCuenta }} • ****{{ cuenta.clabe.slice(-4) }} • Saldo: {{ cuenta.saldo | currency }}
+      </option>
+    </select>
+  </div>
+
+  <div class="vista-tabs">
+    <button 
+      [class.active]="vistaActual === 'servicios'"
+      (click)="cambiarVista('servicios')">
+      💡 Pago de Servicios
+    </button>
+    <button 
+      [class.active]="vistaActual === 'prestamos'"
+      (click)="cambiarVista('prestamos')">
+      💰 Pago de Préstamos
+    </button>
+    <button 
+      [class.active]="mostrarHistorial"
+      (click)="toggleHistorial()">
+      📋 Historial de Pagos
+    </button>
+  </div>
+
+  <div *ngIf="vistaActual === 'servicios' && !mostrarHistorial" class="vista-servicios">
+    <h3>Servicios disponibles</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Referencia</th>
+          <th>Último pago</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let servicio of servicios">
+          <td>{{ servicio.nombre }}</td>
+          <td>{{ servicio.referencia }}</td>
+          <td>${{ servicio.ultimoPago | number:'1.2-2' }}</td>
+          <td><button (click)="pagarServicio(servicio)">Seleccionar</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="montoPago > 0" class="confirmacion-pago">
+      <h3>Confirmar pago de servicio</h3>
+      <p><strong>Referencia:</strong> {{ referencia }}</p>
+      <p><strong>Monto:</strong> ${{ montoPago | number:'1.2-2' }}</p>
+      <button class="submit" (click)="realizarPagoServicio()">Pagar Servicio</button>
+    </div>
+  </div>
+
+  <div *ngIf="vistaActual === 'prestamos' && !mostrarHistorial" class="vista-prestamos">
+    <h3>Préstamos Aprobados</h3>
+    
+    <div *ngIf="prestamos.length === 0" class="no-data">
+      <p>No tienes préstamos aprobados actualmente.</p>
+    </div>
+
+    <table *ngIf="prestamos.length > 0">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Monto Total</th>
+          <th>Pagado</th>
+          <th>Saldo Pendiente</th>
+          <th>Plazo</th>
+          <th>Interés</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prestamo of prestamos">
+          <td>{{ prestamo.tipo }}</td>
+          <td>${{ prestamo.montoTotal | number:'1.2-2' }}</td>
+          <td class="pagado">${{ prestamo.totalPagado | number:'1.2-2' }}</td>
+          <td class="pendiente">${{ calcularSaldoPendiente(prestamo) | number:'1.2-2' }}</td>
+          <td>{{ prestamo.plazo }}</td>
+          <td>{{ prestamo.intereses }}%</td>
+          <td>
+            <button (click)="seleccionarPrestamo(prestamo)">Realizar Pago</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="prestamoSeleccionado" class="confirmacion-pago">
+      <h3>Realizar pago de préstamo</h3>
+      <p><strong>Tipo:</strong> {{ prestamoSeleccionado.tipo }}</p>
+      <p><strong>Saldo pendiente:</strong> ${{ calcularSaldoPendiente(prestamoSeleccionado) | number:'1.2-2' }}</p>
+      
+      <label>Monto a pagar:</label>
+      <input 
+        type="number" 
+        [(ngModel)]="montoPagoPrestamo" 
+        placeholder="Ingresa el monto"
+        min="1"
+        [max]="calcularSaldoPendiente(prestamoSeleccionado)"
+      />
+      
+      <button 
+        class="submit" 
+        (click)="realizarPagoPrestamo()"
+        [disabled]="montoPagoPrestamo <= 0">
+        Realizar Pago de Préstamo
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="mostrarHistorial" class="vista-historial">
+    <h3>📋 Historial de Pagos</h3>
+
+    <div *ngIf="historialPagos.length === 0" class="no-data">
+      <p>No tienes pagos registrados aún.</p>
+    </div>
+
+    <table *ngIf="historialPagos.length > 0">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Categoría</th>
+          <th>Tipo/Concepto</th>
+          <th>CLABE</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pago of historialPagos">
+          <td>{{ pago.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span [class]="'categoria-' + pago.categoria.toLowerCase()">
+              {{ pago.categoria }}
+            </span>
+          </td>
+          <td>{{ pago.tipo }}</td>
+          <td>{{ pago.clabe }}</td>
+          <td class="monto">${{ pago.monto | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="mensaje" [class.success]="mensaje.includes('')" [class.error]="mensaje.includes('')" class="mensaje">
+    {{ mensaje }}
+  </p>
+</div>

@@ -1,0 +1,47 @@
+<div class="container">
+  <h2>Realizar retiro</h2>
+
+  <label for="cuenta">Cuenta:</label>
+  <select id="cuenta" [(ngModel)]="idCuentaSeleccionada" (change)="limpiarMensajes()">
+    <option [ngValue]="null">Seleccionar</option>
+    <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.idCuenta">
+      {{ cuenta.clabe }} - {{ cuenta.tipoCuenta }} ({{ cuenta.saldo | currency:'MXN' }})
+    </option>
+  </select>
+
+  <label>Monto:</label>
+  <div class="monto-btns">
+    <button (click)="seleccionarMonto(100)" [class.active]="montoSeleccionado === 100">$100</button>
+    <button (click)="seleccionarMonto(500)" [class.active]="montoSeleccionado === 500">$500</button>
+    <button (click)="seleccionarMonto(1000)" [class.active]="montoSeleccionado === 1000">$1000</button>
+    <button (click)="seleccionarMonto(1500)" [class.active]="montoSeleccionado === 1500">$1500</button>
+    <button (click)="seleccionarMonto(2000)" [class.active]="montoSeleccionado === 2000">$2000</button>
+    <button (click)="montoSeleccionado = null; limpiarMensajes()" [class.active]="!montoSeleccionado">Otro</button>
+    <input type="number" [(ngModel)]="montoOtro" placeholder="$200" *ngIf="!montoSeleccionado" (input)="limpiarMensajes()" />
+  </div>
+
+  <div class="checkbox-container">
+    <label class="checkbox-label">
+      <input type="checkbox" [(ngModel)]="retiroSinTarjeta" (change)="limpiarMensajes()" /> 
+      Retiro sin tarjeta (se generará un código)
+    </label>
+  </div>
+
+  <button class="submit" (click)="retirar()">Retirar</button>
+
+  <div *ngIf="error" class="mensaje error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="mensaje" class="mensaje success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="codigoGenerado" class="codigo-container">
+    <label>Tu código para retirar es:</label>
+    <div classs="codigo-display">
+      {{ codigoGenerado }}
+    </div>
+    <p>Este código también ha sido enviado a tu correo.</p>
+  </div>
+</div>

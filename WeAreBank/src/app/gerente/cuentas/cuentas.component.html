@@ -1,0 +1,135 @@
+<h2>Administrar Cuentas</h2>
+
+<div class="tabs">
+  <button [class.active]="vista === 'cartera'" (click)="vista = 'cartera'">Cartera de Cuentas</button>
+  <button [class.active]="vista === 'agregar'" (click)="vista = 'agregar'">Agregar Nuevo Cliente</button>
+</div>
+
+<div *ngIf="mensajeExito" class="mensaje success">{{ mensajeExito }}</div>
+<div *ngIf="error" class="mensaje error">{{ error }}</div>
+
+<div *ngIf="vista === 'cartera'" class="vista-container">
+  <h3>Cartera de Cuentas</h3>
+  <input type="text" [(ngModel)]="filtro" placeholder="Filtrar por nombre, email, CLABE o CURP..." class="filtro">
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Contacto</th>
+        <th>Documentos</th>
+        <th>CLABE</th>
+        <th>Saldo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let c of carteraFiltrada">
+        <tr *ngIf="!clienteEnEdicion || clienteEnEdicion.idUsuario !== c.idUsuario">
+          <td>{{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</td>
+          <td>
+            <div>{{ c.email }}</div>
+            <div style="font-size:0.85em; color:#666">{{ c.telefono }}</div>
+          </td>
+          <td>
+            <div style="font-size:0.85em"><strong>RFC:</strong> {{ c.RFC }}</div>
+            <div style="font-size:0.85em"><strong>CURP:</strong> {{ c.CURP }}</div>
+          </td>
+          <td>{{ c.clabe }}</td>
+          <td>{{ c.saldo | currency }}</td>
+          <td>
+            <button class="btn-secundario" (click)="descargarPDF(c.clabe)" title="Descargar Estado de Cuenta">
+              📄 PDF
+            </button>
+            <button class="btn-secundario" (click)="iniciarEdicion(c)">Editar</button>
+            <button class="btn-peligro" (click)="eliminarCuenta(c.idCuenta)">Cerrar</button>
+          </td>
+        </tr>
+        
+        <tr *ngIf="clienteEnEdicion && clienteEnEdicion.idUsuario === c.idUsuario" class="fila-edicion">
+          <td>
+            <input [(ngModel)]="clienteEnEdicion.nombre" placeholder="Nombre" class="form-edit-input">
+            <input [(ngModel)]="clienteEnEdicion.apellidoP" placeholder="Apellido P." class="form-edit-input">
+            <input [(ngModel)]="clienteEnEdicion.apellidoM" placeholder="Apellido M." class="form-edit-input">
+          </td>
+          <td>
+            <input type="email" [(ngModel)]="clienteEnEdicion.email" placeholder="Email" class="form-edit-input">
+            <input type="tel" [(ngModel)]="clienteEnEdicion.telefono" placeholder="Teléfono" class="form-edit-input">
+          </td>
+          <td>
+            <input [(ngModel)]="clienteEnEdicion.RFC" class="form-edit-input" disabled title="No editable">
+            <input [(ngModel)]="clienteEnEdicion.CURP" class="form-edit-input" disabled title="No editable">
+          </td>
+          <td colspan="2">
+            <input [(ngModel)]="clienteEnEdicion.direccion" placeholder="Dirección Completa" class="form-edit-input large">
+          </td>
+          <td>
+            <button class="btn-principal" (click)="guardarCambios()">Guardar</button>
+            <button class="btn-secundario" (click)="cancelarEdicion()">Cancelar</button>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="vista === 'agregar'" class="vista-container">
+  <h3>Formulario de Nuevo Cliente</h3>
+  <form (ngSubmit)="agregarCliente()">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre(s):</label>
+        <input [(ngModel)]="formCliente.nombre" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label>Apellido Paterno:</label>
+        <input [(ngModel)]="formCliente.apellidoP" name="apellidoP" required>
+      </div>
+      <div class="form-group">
+        <label>Apellido Materno:</label>
+        <input [(ngModel)]="formCliente.apellidoM" name="apellidoM" required>
+      </div>
+      <div class="form-group">
+        <label>Fecha de Nacimiento:</label>
+        <input type="date" [(ngModel)]="formCliente.fechaNacimiento" name="fechaNacimiento" required>
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input type="tel" [(ngModel)]="formCliente.telefono" name="telefono" required>
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" [(ngModel)]="formCliente.email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña Provisional:</label>
+        <input type="password" [(ngModel)]="formCliente.contrasenia" name="contrasenia" required>
+      </div>
+      <div class="form-group">
+        <label>CURP:</label>
+        <input [(ngModel)]="formCliente.CURP" name="CURP" required>
+      </div>
+      <div class="form-group">
+        <label>RFC:</label>
+        <input [(ngModel)]="formCliente.RFC" name="RFC" required>
+      </div>
+      <div class="form-group">
+        <label>INE (Folio):</label>
+        <input [(ngModel)]="formCliente.INE" name="INE" required>
+      </div>
+      <div class="form-group full-width">
+        <label>Dirección:</label>
+        <input [(ngModel)]="formCliente.direccion" name="direccion" required>
+      </div>
+      <div class="form-group">
+        <label>Pregunta de Seguridad:</label>
+        <input value="¿Cuál es tu comida favorita?" disabled>
+      </div>
+      <div class="form-group">
+        <label>Respuesta de Seguridad:</label>
+        <input [(ngModel)]="formCliente.respuestaSeguridad" name="respuestaSeguridad" required>
+      </div>
+    </div>
+    <button type="submit" class="btn-principal">Registrar Cliente</button>
+  </form>
+</div>

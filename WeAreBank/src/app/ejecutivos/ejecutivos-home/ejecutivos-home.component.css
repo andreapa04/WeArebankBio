@@ -1,0 +1,37 @@
+.header {
+  margin-bottom: 2rem;
+}
+.header h2 {
+  color: #31296E;
+  margin: 0;
+}
+.header p {
+  color: #555;
+  font-size: 1.1rem;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.stat-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-left: 5px solid #716FAF;
+}
+.stat-card h3 {
+  margin-top: 0;
+  color: #716FAF;
+}
+.stat-card .stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #31296E;
+  margin: 0.5rem 0;
+}
+.stat-card span {
+  font-size: 0.9rem;
+  color: #777;
+}

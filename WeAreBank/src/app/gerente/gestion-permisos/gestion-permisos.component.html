@@ -1,0 +1,59 @@
+<div class="container-grid">
+  
+  <div class="columna-ejecutivos vista-container">
+    <h2>1. Seleccionar Ejecutivo</h2>
+    <div *ngIf="cargando && ejecutivos.length === 0">Cargando ejecutivos...</div>
+    
+    <ul class="lista-ejecutivos">
+      <li *ngFor="let ej of ejecutivos" 
+          (click)="seleccionarEjecutivo(ej)"
+          [class.activo]="ejecutivoSeleccionado?.idUsuario === ej.idUsuario">
+        <strong>{{ ej.nombre }} {{ ej.apellidoP }}</strong>
+        <span>{{ ej.email }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="columna-permisos vista-container">
+    <h2>2. Asignar Permisos</h2>
+
+    <div *ngIf="!ejecutivoSeleccionado">
+      <p>Selecciona un ejecutivo de la lista para ver sus permisos.</p>
+    </div>
+
+    <div *ngIf="cargando && ejecutivoSeleccionado">Cargando permisos...</div>
+
+    <div *ngIf="ejecutivoSeleccionado && !cargando">
+      <h3>Permisos para: <strong>{{ ejecutivoSeleccionado.nombre }} {{ ejecutivoSeleccionado.apellidoP }}</strong></h3>
+
+      <div *ngIf="mensaje" class="mensaje success">{{ mensaje }}</div>
+      <div *ngIf="error" class="mensaje error">{{ error }}</div>
+
+      <table class="permisos-table">
+        <thead>
+          <tr>
+            <th>Permiso</th>
+            <th>Descripción</th>
+            <th>Habilitado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of catalogoPermisos">
+            <td><strong>{{ p.nombrePermiso }}</strong></td>
+            <td>{{ p.descripcion }}</td>
+            <td>
+              <input 
+                type="checkbox" 
+                [(ngModel)]="permisosDelEjecutivo[p.idPermiso]"
+                name="permiso_{{p.idPermiso}}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="save-btn" (click)="guardarCambios()" [disabled]="cargando">
+        Guardar Cambios para {{ ejecutivoSeleccionado.nombre }}
+      </button>
+    </div>
+  </div>
+</div>

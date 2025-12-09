@@ -1,0 +1,95 @@
+.recuperar-container {
+  max-width: 400px;
+  margin: 3rem auto;
+  background-color: #f8f8fc;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.recuperar-container h2 {
+  color: #5d5b9d;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #716FAF;
+  outline: none;
+}
+
+.btn-principal {
+  background-color: #716FAF;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 0.5rem;
+}
+
+.btn-principal:hover {
+  background-color: #5d5b9d;
+}
+
+.btn-principal:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secundario {
+  background-color: #e4e4f2;
+  color: #333;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-secundario:hover {
+  background-color: #d2d2ec;
+}
+
+.error-message {
+  color: #a11a1a;
+  background-color: #ffe5e5;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #1a8a1a;
+  background-color: #e0ffe0;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.bloqueado-msg {
+  color: #b00;
+  font-weight: bold;
+  margin-top: 1rem;
+}

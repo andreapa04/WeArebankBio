@@ -1,0 +1,93 @@
+/* Estructura principal del layout */
+.ejecutivo-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f4f7fa; /* Fondo general */
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #31296E; /* Morado oscuro */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.content {
+  flex-grow: 1;
+  overflow-y: auto; /* Permite scroll en el contenido */
+  padding: 2rem;
+}
+
+/* Encabezado de la barra lateral */
+.sidebar-header {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #4a418a;
+}
+.sidebar-header h3 {
+  margin: 0;
+  color: #ffffff;
+}
+.sidebar-header span {
+  font-size: 0.9rem;
+  color: #B2B0D5;
+}
+
+/* Lista de navegación */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  flex-grow: 1; /* Empuja el footer hacia abajo */
+}
+
+.sidebar li a {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: #e4e4f2;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 1rem;
+}
+
+.sidebar li a:hover {
+  background-color: #4a418a;
+  color: #ffffff;
+}
+
+.sidebar li a.active {
+  background-color: #716FAF; /* Morado más claro */
+  color: #ffffff;
+  font-weight: 600;
+  border-right: 4px solid #ffffff;
+}
+
+.sidebar li a i {
+  margin-right: 10px;
+  font-size: 1.2rem; /* Asumiendo que usas una fuente de íconos */
+}
+
+/* Pie de la barra lateral */
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #4a418a;
+}
+
+.sidebar-footer button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #B2B0D5;
+  border: none;
+  border-radius: 6px;
+  color: #31296E;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-footer button:hover {
+  background-color: #ffffff;
+}

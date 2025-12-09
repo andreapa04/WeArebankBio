@@ -1,0 +1,46 @@
+<div class="ejecutivo-container">
+  
+  <!-- Barra lateral de navegación -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h3>WeAreBank</h3>
+      <span>Portal Ejecutivo</span>
+    </div>
+    
+    <ul>
+      <li>
+        <a routerLink="inicio" routerLinkActive="active">
+          <i class="icon icon-home"></i> <!-- Reemplaza con tus íconos si tienes -->
+          <span>Inicio</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="cuentas" routerLinkActive="active">
+          <i class="icon icon-cuentas"></i>
+          <span>Administrar Cuentas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="solicitudes" routerLinkActive="active">
+          <i class="icon icon-solicitudes"></i>
+          <span>Solicitudes</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="consultas" routerLinkActive="active">
+          <i class="icon icon-consultas"></i>
+          <span>Consultar Clientes</span>
+        </a>
+      </li>
+    </ul>
+    
+    <div class="sidebar-footer">
+      <button (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal donde se cargan las sub-páginas -->
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

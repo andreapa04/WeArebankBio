@@ -1,0 +1,22 @@
+<div class="header">
+  <h2>Bienvenido, {{ nombreEjecutivo }}</h2>
+  <p>Resumen de actividad del banco.</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <h3>Clientes Activos</h3>
+    <p class="stat-number">{{ stats.clientesActivos }}</p>
+    <span>Total de clientes</span>
+  </div>
+  <div class="stat-card">
+    <h3>Préstamos Otorgados</h3>
+    <p class="stat-number">{{ stats.prestamosOtorgados }}</p>
+    <span>Total de solicitudes aprobadas</span>
+  </div>
+  <div class="stat-card">
+    <h3>Solicitudes del Mes</h3>
+    <p class="stat-number">{{ stats.solicitudesMes }}</p>
+    <span>(Nuevas en este mes calendario)</span>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<section>
+  <h2>Mis Préstamos</h2>
+  <div *ngIf="solicitudes.length === 0" class="no-data">
+    <p>No tienes préstamos solicitados.</p>
+  </div>
+  
+  <table *ngIf="solicitudes.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Monto</th>
+        <th>Estado</th>
+        <th>Saldo Pendiente</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of solicitudes">
+        <td>{{ s.idSolicitud }}</td>
+        <td>{{ s.tipo.replace('PRESTAMO_', '') }}</td>
+        <td>{{ s.montoTotal | currency }}</td>
+        
+        <td [ngClass]="{
+          'status-aprobada': s.estado === 'APROBADA',
+          'status-pendiente': s.estado === 'EN_REVISION',
+          'status-finalizada': s.estado === 'FINALIZADA',
+          'status-rechazada': s.estado === 'RECHAZADA'
+        }">
+          {{ s.estado }}
+        </td>
+
+        <td>{{ s.saldoPendiente | currency }}</td>
+        <td>{{ s.fechaSolicitud | date:'shortDate' }}</td>
+        
+        <td>
+          <button 
+            *ngIf="s.estado === 'APROBADA' || s.estado === 'FINALIZADA'" 
+            (click)="verPagos(s.idSolicitud)"
+            [class.active]="solicitudSeleccionada === s.idSolicitud">
+            {{ solicitudSeleccionada === s.idSolicitud ? 'Ocultar Pagos' : 'Ver Pagos' }}
+          </button>
+          
+          <div *ngIf="s.estado === 'APROBADA'" class="pago-form">
+            <input type="number" placeholder="Monto" [(ngModel)]="montoPago">
+            <button (click)="pagarSolicitud(s.idSolicitud)">Pagar</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<hr />
+
+<section *ngIf="solicitudSeleccionada" class="historial-pagos">
+  <h3>Historial de Pagos (Préstamo #{{ solicitudSeleccionada }})</h3>
+  
+  <table *ngIf="pagos.length > 0; else noPagos">
+    <thead>
+      <tr>
+        <th>ID Pago</th>
+        <th>Monto</th>
+        <th>Fecha y hora</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of pagos">
+        <td>{{ p.idPago }}</td>
+        <td>{{ p.monto | currency }}</td>
+        <td>{{ p.fechaHora | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noPagos>
+    <p>No se han registrado pagos para esta solicitud.</p>
+  </ng-template>
+</section>
+
+<hr />
+
+<section>
+  <h2>Solicitar nuevo préstamo</h2>
+  
+  <p *ngIf="mensaje" class="mensaje">{{ mensaje }}</p>
+
+  <div class="form-group">
+    <label>Depositar en cuenta:</label>
+    <select [(ngModel)]="cuentaSeleccionada">
+      <option [value]="null">Seleccionar cuenta</option>
+      <option *ngFor="let c of cuentas" [value]="c.idCuenta">
+        {{ c.tipoCuenta }} • ****{{ c.clabe.slice(-4) }} • Saldo: {{ c.saldo | currency }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Tipo de préstamo:</label>
+    <select [(ngModel)]="tipoPrestamo">
+      <option value="PRESTAMO_PERSONAL">Préstamo Personal</option>
+      <option value="PRESTAMO_NOMINA">Préstamo de Nómina</option>
+      <option value="PRESTAMO_EMERGENCIA">Préstamo de Emergencia</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Monto:</label>
+    <input type="number" [(ngModel)]="monto" placeholder="Ej. 10000" />
+  </div>
+
+  <div class="form-group">
+    <label>Plazo (meses):</label>
+    <input type="number" [(ngModel)]="plazo" placeholder="Ej. 12" />
+  </div>
+
+  <button (click)="solicitarPrestamo()">Solicitar Préstamo</button>
+</section>

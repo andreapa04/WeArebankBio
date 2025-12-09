@@ -1,0 +1,56 @@
+<div class="app-container">
+  <!-- Navbar Cliente -->
+  <header *ngIf="showNavbar && userType === 'cliente'">
+    <h1>WeAreBank - Portal Cliente</h1>
+    <p class="saludo">👋 Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+    <nav>
+      <a [routerLink]="['/cliente']" [class.active]="isActiveRoute('/cliente')">Inicio</a> |
+      <a [routerLink]="['/cliente/consultas']" [class.active]="isActiveRoute('/cliente/consultas')">Consultas</a> |
+      <a [routerLink]="['/cliente/retiros']" [class.active]="isActiveRoute('/cliente/retiros')">Retiros</a> |
+      <a [routerLink]="['/cliente/transferencias']" [class.active]="isActiveRoute('/cliente/transferencias')">Transferencias</a> |
+      <a [routerLink]="['/cliente/pagos']" [class.active]="isActiveRoute('/cliente/pagos')">Pagos</a> |
+      <a [routerLink]="['/cliente/prestamos']" [class.active]="isActiveRoute('/cliente/prestamos')">Préstamos</a> |
+      <a [routerLink]="['/cliente/creditos']" [class.active]="isActiveRoute('/cliente/creditos')">Créditos</a> |
+      <a [routerLink]="['/cliente/depositos']" [class.active]="isActiveRoute('/cliente/depositos')">Depósitos</a> |
+      <a href="#" (click)="logout($event)">Cerrar Sesión</a>
+    </nav>
+  </header>
+
+  <!-- Navbar Gerente -->
+  <header *ngIf="showNavbar && userType === 'gerente'" class="gerente-header">
+    <h1>WeAreBank - Portal Gerente</h1>
+    <p class="saludo">👋 Hola, <strong>{{ nombreUsuario }}</strong></p>
+    <nav>
+      <a [routerLink]="['/gerente']" [class.active]="isActiveRoute('/gerente')">Inicio</a> |
+      <a [routerLink]="['/gerente/autorizaciones']" [class.active]="isActiveRoute('/gerente/autorizaciones')">Autorizaciones</a> |
+      <a [routerLink]="['/gerente/cuentas']" [class.active]="isActiveRoute('/gerente/cuentas')">Cuentas</a> |
+      <a [routerLink]="['/gerente/gestion-permisos']" [class.active]="isActiveRoute('/gerente/gestion-permisos')">Gestión Permisos</a> |
+      <a href="#" (click)="logout($event)">Cerrar Sesión</a>
+    </nav>
+  </header>
+
+  <header *ngIf="showNavbar && userType === 'ejecutivo'" class="ejecutivos-header">
+    <h1>WeAreBank - Portal Ejecutivo</h1>
+    <p class="saludo">👋 Bienvenido, <strong>{{ nombreUsuario }}</strong></p>
+    <nav>
+      <a [routerLink]="['/ejecutivos/inicio']" [class.active]="isActiveRoute('/ejecutivos/inicio')">Inicio</a> |
+      <a [routerLink]="['/ejecutivos/cuentas']" [class.active]="isActiveRoute('/ejecutivos/cuentas')">Administrar Cuentas</a> |
+      <a [routerLink]="['/ejecutivos/solicitudes']" [class.active]="isActiveRoute('/ejecutivos/solicitudes')">Solicitudes</a> |
+      <a [routerLink]="['/ejecutivos/consultas']" [class.active]="isActiveRoute('/ejecutivos/consultas')">Consultar Clientes</a> |
+      <a href="#" (click)="logout($event)">Cerrar Sesión</a>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer *ngIf="showNavbar">
+    <p>Todos los derechos reservados. © 2025 WeAreBank</p>
+  </footer>
+</div>
